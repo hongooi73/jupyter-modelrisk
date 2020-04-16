@@ -7,7 +7,7 @@ RUN conda config --append channels conda-forge &&\
     conda update --yes --all &&\
 	conda clean -a -y
 
-RUN conda install -y nodejs
+RUN conda install -y nodejs=8.12.0
 RUN jupyter labextension install --no-build @jupyterlab/toc && \
  jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
  jupyter labextension install --no-build @jupyterlab/hub-extension && \
