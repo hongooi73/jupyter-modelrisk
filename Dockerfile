@@ -100,7 +100,7 @@ RUN pip install jupyterlab_templates &&\
   jupyter serverextension enable --py jupyterlab_templates
 
 
-#setup R configs
+# setup R configs
 # Install h2o for R
 RUN echo ".libPaths('/opt/conda/lib/R/library')" >> ~/.Rprofile &&\
     echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2019-07-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\

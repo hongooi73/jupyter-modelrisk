@@ -6,7 +6,8 @@ packages <- c(
 	"officer",
 	"rvg",
 	"ROCR",
-	"docxtractr"
+	"docxtractr", 
+	"xgboost"
 )
 
 install.packages(packages)
