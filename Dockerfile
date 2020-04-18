@@ -20,7 +20,8 @@ USER $NB_UID
 
 # R packages
 RUN conda install --quiet --yes \
-    'r-base=3.6.2' \
+	'r-base=3.6.2' \
+	r-essentials \
     'r-ggplot2=3.2*' \
     'r-irkernel=1.1*' \
     'r-rcurl=1.98*' \
@@ -39,14 +40,38 @@ RUN pip install --no-cache-dir \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-
 # Extra Installation for model risk team
-RUN conda config --add channels conda-forge &&\
-	conda config --add channels r &&\
-    conda update --yes --all &&\
-	conda clean -a -y
+# RUN conda config --add channels conda-forge &&\
+#	conda config --add channels r &&\
+#   conda update --yes --all &&\
+#   conda clean -a -y
 
-RUN conda install -c conda-forge nodejs
+RUN conda install --quiet --yes \
+    r-tidyverse \
+	r-fs \
+    r-reticulate \
+    r-hmisc \
+    r-odbc \
+    r-data.table \
+    r-expm \
+    r-remotes \
+    r-flextable \
+    r-mlr \
+    r-ranger \
+    r-rcurl \
+    r-feather \
+    r-gbm \
+    r-xgboost \
+    r-randomforest  && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
+RUN conda install -c conda-forge -y nodejs && \
+	conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 RUN jupyter labextension install --no-build @jupyterlab/toc && \
  jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
  jupyter labextension install --no-build @jupyterlab/hub-extension && \
