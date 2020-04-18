@@ -45,12 +45,7 @@ USER $NB_UID
 
 # R packages
 # Install additional R packages here
-RUN conda install --quiet --yes \
-    'r-base=3.6.1' \
-    'r-irkernel=1.0*' \
-    'r-rcurl=1.95*' \
-    'r-sparklyr=1.0*' \
-	jupyter_contrib_nbextensions \
+RUN pip install jupyter_contrib_nbextensions \
 	rpy2 \
 	altair \
 	vega \
