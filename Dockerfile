@@ -1,6 +1,7 @@
+# REF: docker-stacks/all-spark-notebook/
 FROM jupyter/pyspark-notebook
 
-LABEL maintainer="Ogi Stancevic <ognjen.stancevic@westpac.com.au>"
+LABEL maintainer="Ting Yu <ting.yu@westpac.com.au>"
 
 USER root
 
@@ -8,78 +9,7 @@ USER root
 ENV R_LIBS_USER $SPARK_HOME/R/lib
 RUN fix-permissions $R_LIBS_USER
 
-# R pre-requisites
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    fonts-dejavu \
-    gfortran \
-    gcc && \
-    rm -rf /var/lib/apt/lists/*
-
-USER $NB_UID
-
-# R packages
-RUN conda install --quiet --yes \
-	'r-base=3.6.2' \
-	r-essentials \
-    'r-ggplot2=3.2*' \
-    'r-irkernel=1.1*' \
-    'r-rcurl=1.98*' \
-    'r-sparklyr=1.1*' \
-    && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# Apache Toree kernel
-RUN pip install --no-cache-dir \
-    https://dist.apache.org/repos/dist/release/incubator/toree/0.3.0-incubating/toree-pip/toree-0.3.0.tar.gz \
-    && \
-    jupyter toree install --sys-prefix && \
-    rm -rf /home/$NB_USER/.local && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# Extra Installation for model risk team
-# RUN conda config --add channels conda-forge &&\
-#	conda config --add channels r &&\
-#   conda update --yes --all &&\
-#   conda clean -a -y
-
-RUN conda install --quiet --yes \
-    r-tidyverse \
-	r-fs \
-    r-reticulate \
-    r-hmisc \
-    r-odbc \
-    r-data.table \
-    r-expm \
-    r-remotes \
-    r-flextable \
-    r-mlr \
-    r-ranger \
-    r-rcurl \
-    r-feather \
-    r-gbm \
-    r-xgboost \
-    r-randomforest  && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-RUN conda install -c conda-forge -y nodejs && \
-	conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-RUN jupyter labextension install --no-build @jupyterlab/toc && \
- jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
- jupyter labextension install --no-build @jupyterlab/hub-extension && \
- jupyter lab build
-
-USER root
-
-# Teradata pre-requisites
+# R and Teradata pre-requisites
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends \
     gdebi-core \
@@ -101,7 +31,14 @@ USER $NB_UID
 
 # R packages
 # Install additional R packages here
-RUN pip install jupyter_contrib_nbextensions \
+RUN conda install --quiet --yes \
+    'r-base=3.6.3' \
+	r-essentials \
+	'r-ggplot2=3.3*' \
+    'r-irkernel=1.1*' \
+    'r-rcurl=1.98*' \
+    'r-sparklyr=1.2*' \
+	jupyter_contrib_nbextensions \
 	rpy2 \
 	altair \
 	vega \
@@ -120,6 +57,24 @@ RUN pip install jupyter_contrib_nbextensions \
 	python-docx
 
 
+# End of all-spark-notebook
+
+#RUN conda config --append channels conda-forge &&\
+#    conda config --append channels r &&\
+#    conda update --yes --all &&\
+#	conda clean -a -y
+
+#RUN conda install -y 'nodejs=10.*'
+RUN conda install -c conda-forge -y nodejs && \
+	conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+	
+RUN jupyter labextension install --no-build @jupyterlab/toc && \
+ jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
+ jupyter labextension install --no-build @jupyterlab/hub-extension && \
+ jupyter lab build
+
 RUN pip install jupyterlab_templates &&\
   jupyter labextension install jupyterlab_templates && \
   jupyter serverextension enable --py jupyterlab_templates
@@ -128,8 +83,8 @@ RUN pip install jupyterlab_templates &&\
 # setup R configs
 # Install h2o for R
 RUN echo ".libPaths('/opt/conda/lib/R/library')" >> ~/.Rprofile &&\
-    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2019-07-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\
-   Rscript -e 'install.packages("h2o", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R")))'  
+    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2020-08-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\
+   Rscript -e 'install.packages("h2o", repos=(c("https://h2o-release.s3.amazonaws.com/h2o/rel-zermelo/1/R")))'  
 EXPOSE 8787
 
 # Install additional R packages here
