@@ -1,17 +1,7 @@
+# REF: docker-stacks/all-spark-notebook/
 FROM jupyter/pyspark-notebook
 
-LABEL maintainer="Ogi Stancevic <ognjen.stancevic@westpac.com.au>"
-
-RUN conda config --append channels conda-forge &&\
-    conda config --append channels r &&\
-    conda update --yes --all &&\
-	conda clean -a -y
-
-RUN conda install -y nodejs
-RUN jupyter labextension install --no-build @jupyterlab/toc && \
- jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
- jupyter labextension install --no-build @jupyterlab/hub-extension && \
- jupyter lab build
+LABEL maintainer="Ting Yu <ting.yu@westpac.com.au>"
 
 USER root
 
@@ -19,8 +9,7 @@ USER root
 ENV R_LIBS_USER $SPARK_HOME/R/lib
 RUN fix-permissions $R_LIBS_USER
 
-
-# Teradata pre-requisites
+# R and Teradata pre-requisites
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gdebi-core \
@@ -46,10 +35,12 @@ USER $NB_UID
 # R packages
 # Install additional R packages here
 RUN conda install --quiet --yes \
-    'r-base=3.6.1' \
-    'r-irkernel=1.0*' \
-    'r-rcurl=1.95*' \
-    'r-sparklyr=1.0*' \
+    'r-base=3.6.3' \
+	r-essentials \
+	'r-ggplot2=3.3*' \
+    'r-irkernel=1.1*' \
+    'r-rcurl=1.98*' \
+    'r-sparklyr=1.2*' \
 	jupyter_contrib_nbextensions \
 	rpy2 \
 	altair \
@@ -69,6 +60,24 @@ RUN conda install --quiet --yes \
 	python-docx && \
     conda install -y -c h2oai h2o && \
     conda clean -a -y
+
+# End of all-spark-notebook
+
+#RUN conda config --append channels conda-forge &&\
+#    conda config --append channels r &&\
+#    conda update --yes --all &&\
+#	conda clean -a -y
+
+#RUN conda install -y 'nodejs=10.*'
+RUN conda install -c conda-forge -y nodejs && \
+	conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+	
+RUN jupyter labextension install --no-build @jupyterlab/toc && \
+ jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
+ jupyter labextension install --no-build @jupyterlab/hub-extension && \
+ jupyter lab build
 
 RUN pip install jupyterlab_templates &&\
   jupyter labextension install jupyterlab_templates && \
@@ -101,8 +110,8 @@ RUN pip install jupyterlab_templates &&\
 #setup R configs
 # Install h2o for R
 RUN echo ".libPaths('/opt/conda/lib/R/library')" >> ~/.Rprofile &&\
-    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2019-07-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\
-   Rscript -e 'install.packages("h2o", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R")))'  
+    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2020-08-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\
+   Rscript -e 'install.packages("h2o", repos=(c("https://h2o-release.s3.amazonaws.com/h2o/rel-zermelo/1/R")))'  
 EXPOSE 8787
 
 # Install additional R packages here
