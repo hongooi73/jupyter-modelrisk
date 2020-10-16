@@ -83,6 +83,8 @@ RUN pip install jupyterlab_templates &&\
   jupyter labextension install jupyterlab_templates && \
   jupyter serverextension enable --py jupyterlab_templates
 
+RUN pip install pytest
+
 # More R packages
   RUN conda install \
     r-tidyverse \
