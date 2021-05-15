@@ -1,7 +1,7 @@
 # REF: docker-stacks/all-spark-notebook/
 FROM jupyter/pyspark-notebook
 
-LABEL maintainer="Ting Yu <ting.yu@westpac.com.au>"
+LABEL maintainer="Hong Ooi <khay.ooi@westpac.com.au>"
 
 USER root
 
@@ -35,12 +35,12 @@ USER $NB_UID
 # R packages
 # Install additional R packages here
 RUN conda install --quiet --yes \
-    'r-base=3.6.3' \
+    'r-base=4.0.5' \
 	r-essentials \
 	'r-ggplot2=3.3*' \
     'r-irkernel=1.1*' \
     'r-rcurl=1.98*' \
-    'r-sparklyr=1.2*' \
+    'r-sparklyr=1.6*' \
 	jupyter_contrib_nbextensions \
 	rpy2 \
 	altair \
