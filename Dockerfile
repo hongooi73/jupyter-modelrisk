@@ -135,3 +135,14 @@ RUN jupyter nbextension enable collapsible_headings/main && \
  jupyter nbextension enable execute_time/ExecuteTime && \
  jupyter nbextension enable export_embedded/main && \
  jupyter nbextension enable tree-filter/index
+
+# extra packages for individual projects
+RUN mamba install --quiet --yes \
+    'tensorflow=2.4.1' && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+RUN mamba install --yes r-rjava -c conda-forge && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
