@@ -58,7 +58,6 @@ RUN conda install --quiet --yes \
   	tqdm \
 	pyodbc \
 	python-docx && \
-    conda install -y -c h2oai h2o && \
     conda clean -a -y
 
 # End of all-spark-notebook
@@ -110,10 +109,8 @@ RUN pip install pytest
 
 
 #setup R configs
-# Install h2o for R
 RUN echo ".libPaths('/opt/conda/lib/R/library')" >> ~/.Rprofile &&\
-    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2020-08-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile &&\
-   Rscript -e 'install.packages("h2o", repos=(c("https://h2o-release.s3.amazonaws.com/h2o/rel-zermelo/1/R")))'  
+    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2021-04-30'; options(repos = r)})" >> /home/$NB_USER/.Rprofile
 EXPOSE 8787
 
 # Install additional R packages here
