@@ -1,13 +1,8 @@
-# REF: docker-stacks/all-spark-notebook/
-FROM jupyter/pyspark-notebook
+FROM jupyter/tensorflow-notebook
 
 LABEL maintainer="Hong Ooi <khay.ooi@westpac.com.au>"
 
 USER root
-
-# RSpark config
-ENV R_LIBS_USER $SPARK_HOME/R/lib
-RUN fix-permissions $R_LIBS_USER
 
 # R and Teradata pre-requisites
 RUN apt-get update && \
@@ -40,7 +35,7 @@ RUN conda install --quiet --yes \
 	'r-ggplot2=3.3*' \
     'r-irkernel=1.1*' \
     'r-rcurl=1.98*' \
-    'r-sparklyr=1.6*' \
+    # 'r-sparklyr=1.6*' \
 	jupyter_contrib_nbextensions \
 	rpy2 \
 	altair \
@@ -85,7 +80,7 @@ RUN pip install jupyterlab_templates &&\
 RUN pip install pytest
 
 # More R packages
-  RUN conda install \
+RUN conda install \
     r-tidyverse \
     r-fs \
     r-reticulate \
@@ -135,3 +130,7 @@ RUN jupyter nbextension enable collapsible_headings/main && \
  jupyter nbextension enable execute_time/ExecuteTime && \
  jupyter nbextension enable export_embedded/main && \
  jupyter nbextension enable tree-filter/index
+
+# packages for specific projects
+RUN conda install -y -c conda-forge imblearn
+RUN conda install -y -c conda-forge r-rjava
