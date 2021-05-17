@@ -146,3 +146,8 @@ RUN mamba install --quiet --yes \
 RUN mamba install --yes r-rjava -c conda-forge && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
+
+RUN mamba install -y -c conda-forge imbalanced-learn && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
