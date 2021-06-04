@@ -155,7 +155,7 @@ RUN mamba install -y -c conda-forge imbalanced-learn && \
 RUN mamba install -y -c conda-forge \
     xgboost \
     shap \
-    graphviz \
+    python-graphviz \
     fastparquet \
     && \
     conda clean --all -f -y && \
