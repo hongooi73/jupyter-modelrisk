@@ -35,7 +35,7 @@ USER $NB_UID
 # R packages
 # Install additional R packages here
 RUN conda install --quiet --yes \
-    'r-base=4.0.5' \
+    'r-base=4.1.0' \
 	r-essentials \
 	'r-ggplot2=3.3*' \
     'r-irkernel=1.1*' \
