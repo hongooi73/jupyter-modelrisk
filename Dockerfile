@@ -58,10 +58,6 @@ RUN conda install --quiet --yes \
   	tqdm \
 	pyodbc \
 	python-docx && \
-    xgboost \
-    shap \
-    graphviz \
-    fastparquet \
     conda clean -a -y
 
 # End of all-spark-notebook
