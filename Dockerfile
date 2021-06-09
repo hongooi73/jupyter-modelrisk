@@ -157,6 +157,7 @@ RUN mamba install -y -c conda-forge \
     shap \
     python-graphviz \
     fastparquet \
+    pydotplus \
     && \
     conda clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
