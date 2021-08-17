@@ -1,5 +1,7 @@
 # REF: docker-stacks/all-spark-notebook/
-FROM jupyter/pyspark-notebook
+# docker pull jupyter/pyspark-notebook:70178b8e48d7
+# docker pull jupyter/pyspark-notebook:notebook-6.4.2
+FROM jupyter/pyspark-notebook:notebook-6.4.2
 
 LABEL maintainer="Hong Ooi <khay.ooi@westpac.com.au>"
 
@@ -34,11 +36,11 @@ USER $NB_UID
 
 # R packages
 # Install additional R packages here
-RUN conda install --quiet --yes \
-    'r-base=4.0.5' \
+RUN mamba install --quiet --yes \
+    'r-base=4.1.1' \
 	r-essentials \
 	'r-ggplot2=3.3*' \
-    'r-irkernel=1.1*' \
+    'r-irkernel=1.2*' \
     'r-rcurl=1.98*' \
     'r-sparklyr=1.6*' \
 	jupyter_contrib_nbextensions \
@@ -68,15 +70,15 @@ RUN conda install --quiet --yes \
 #	conda clean -a -y
 
 #RUN conda install -y 'nodejs=10.*'
-RUN conda install -c conda-forge -y nodejs && \
+RUN mamba install -c conda-forge -y nodejs && \
 	conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 	
-RUN jupyter labextension install --no-build @jupyterlab/toc && \
- jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
- jupyter labextension install --no-build @jupyterlab/hub-extension && \
- jupyter lab build
+# RUN jupyter labextension install --no-build @jupyterlab/toc && \
+#  jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
+#  jupyter labextension install --no-build @jupyterlab/hub-extension && \
+#  jupyter lab build
 
 RUN pip install jupyterlab_templates &&\
   jupyter labextension install jupyterlab_templates && \
@@ -85,7 +87,7 @@ RUN pip install jupyterlab_templates &&\
 RUN pip install pytest
 
 # More R packages
-  RUN conda install \
+  RUN mamba install \
     r-tidyverse \
     r-fs \
     r-reticulate \
@@ -110,7 +112,7 @@ RUN pip install pytest
 
 #setup R configs
 RUN echo ".libPaths('/opt/conda/lib/R/library')" >> ~/.Rprofile &&\
-    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2021-04-30'; options(repos = r)})" >> /home/$NB_USER/.Rprofile
+    echo "local({r <- getOption('repos'); r['CRAN'] <- 'https://mran.microsoft.com/snapshot/2021-07-31'; options(repos = r)})" >> /home/$NB_USER/.Rprofile
 EXPOSE 8787
 
 # Install additional R packages here
@@ -137,6 +139,7 @@ RUN jupyter nbextension enable collapsible_headings/main && \
  jupyter nbextension enable tree-filter/index
 
 # extra packages for individual projects
+# note first instance of 'conda clean' can take a long time
 RUN mamba install --quiet --yes \
     'tensorflow=2.4.1' && \
     conda clean --all -f -y && \
