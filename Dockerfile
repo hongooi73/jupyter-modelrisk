@@ -87,7 +87,7 @@ RUN pip install jupyterlab_templates &&\
 RUN pip install pytest
 
 # More R packages
-  RUN mamba install \
+RUN mamba install \
     r-tidyverse \
     r-fs \
     r-reticulate \
@@ -140,11 +140,11 @@ RUN jupyter nbextension enable collapsible_headings/main && \
 
 # extra packages for individual projects
 # note first instance of 'conda clean' can take a long time
-RUN mamba install --quiet --yes \
-    'tensorflow=2.4.1' && \
-    conda clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+# RUN mamba install --quiet --yes \
+#     'tensorflow=2.4.1' && \
+#     conda clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}" && \
+#     fix-permissions "/home/${NB_USER}"
 
 RUN mamba install --yes r-rjava -c conda-forge && \
     fix-permissions "${CONDA_DIR}" && \
