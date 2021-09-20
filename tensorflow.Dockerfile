@@ -1,8 +1,6 @@
-FROM hongooi/jupytermodelrisk:1.0.0
+FROM hongooi/jupytermodelrisk:1.0.1
 
 RUN mamba create -n tensorflow
-
-RUN mamba install -y nb_conda_kernels
 
 RUN mamba install -n tensorflow -y \
     'tensorflow=2.4.3' \
